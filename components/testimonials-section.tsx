@@ -53,7 +53,7 @@ export function TestimonialsSection() {
     return (
         <>
             <div id="musteri-memnuniyeti"></div>
-            <section id="referanslar" className="py-20 bg-gradient-to-br from-emerald-50 via-white to-blue-50">
+            <section id="referanslar" className="py-20 bg-gradient-to-br from-orange-50 via-white to-amber-50">
                 <div className="container mx-auto px-4">
                     <div className="max-w-6xl mx-auto">
                         {/* Section Header */}
@@ -77,7 +77,7 @@ export function TestimonialsSection() {
                             <CarouselContent className="-ml-4">
                                 {testimonials.map((testimonial, index) => (
                                     <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                                        <Card className="h-full border-2 border-gray-100 hover:border-emerald-200 transition-all hover:shadow-xl">
+                                        <Card className="h-full border-2 border-gray-100 hover:border-orange-200 transition-all hover:shadow-xl">
                                             <CardContent className="p-6">
                                                 {/* Rating */}
                                                 <div className="flex items-center gap-1 mb-4">
@@ -106,7 +106,7 @@ export function TestimonialsSection() {
                                                                 {testimonial.before}
                                                             </span>
                                                         </div>
-                                                        <div className="aspect-square rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center">
+                                                        <div className="aspect-square rounded-lg bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
                                                             <span className="text-xs text-white font-medium">
                                                                 {testimonial.after}
                                                             </span>
@@ -116,7 +116,7 @@ export function TestimonialsSection() {
 
                                                 {/* Project Type */}
                                                 <div className="mb-4">
-                                                    <span className="inline-block px-3 py-1 text-xs font-semibold bg-emerald-100 text-emerald-700 rounded-full">
+                                                    <span className="inline-block px-3 py-1 text-xs font-semibold bg-orange-100 text-orange-700 rounded-full">
                                                         {testimonial.project}
                                                     </span>
                                                 </div>
@@ -124,7 +124,7 @@ export function TestimonialsSection() {
                                                 {/* Customer Info */}
                                                 <div className="border-t pt-4">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="h-12 w-12 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center text-white font-bold">
+                                                        <div className="h-12 w-12 rounded-full bg-gradient-to-br from-orange-500 to-orange-700 flex items-center justify-center text-white font-bold">
                                                             {testimonial.name.charAt(0)}
                                                         </div>
                                                         <div>

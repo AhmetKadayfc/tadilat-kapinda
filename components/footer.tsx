@@ -52,11 +52,11 @@ export function Footer() {
                     {/* Logo & About */}
                     <div className="lg:col-span-2">
                         <Link href="/" className="flex items-center space-x-2 mb-6">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-700">
-                                <span className="text-2xl font-bold text-white">TK</span>
+                            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-orange-500 to-orange-700">
+                                <span className="text-2xl font-bold text-white">TC</span>
                             </div>
                             <div className="flex flex-col">
-                                <span className="text-xl font-bold text-white">Tadilat Kapında</span>
+                                <span className="text-xl font-bold text-white">Tadilat Cebimde</span>
                                 <span className="text-xs text-gray-400">Ev Tadilat Hizmetleri</span>
                             </div>
                         </Link>
@@ -76,8 +76,7 @@ export function Footer() {
                                 <a
                                     key={index}
                                     href={social.href}
-                                    className="h-10 w-10 rounded-full bg-gray-800 hover:bg-emerald-600 flex items-center justify-center transition-colors"
-                                >
+                                    className="h-10 w-10 rounded-full bg-gray-800 hover:bg-orange-600 flex items-center justify-center transition-colors">
                                     <social.Icon className="h-5 w-5" />
                                 </a>
                             ))}
@@ -93,8 +92,7 @@ export function Footer() {
                                     <li key={linkIndex}>
                                         <Link
                                             href={link.href}
-                                            className="text-gray-400 hover:text-emerald-400 transition-colors text-sm"
-                                        >
+                                            className="text-gray-400 hover:text-orange-400 transition-colors text-sm">
                                             {link.name}
                                         </Link>
                                     </li>
@@ -107,7 +105,7 @@ export function Footer() {
                 {/* Newsletter */}
                 <div className="border-t border-gray-700 pt-12 mb-12">
                     <div className="max-w-md mx-auto text-center">
-                        <Mail className="h-12 w-12 text-emerald-500 mx-auto mb-4" />
+                        <Mail className="h-12 w-12 text-orange-500 mx-auto mb-4" />
                         <h3 className="text-2xl font-bold mb-2">Bültenimize Abone Olun</h3>
                         <p className="text-gray-400 mb-6">
                             Tadilat fırsatları ve kampanyalardan haberdar olun!
@@ -118,13 +116,12 @@ export function Footer() {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="E-posta adresiniz"
-                                className="flex-1 px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-emerald-500 focus:outline-none text-white"
+                                className="flex-1 px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-orange-500 focus:outline-none text-white"
                                 required
                             />
                             <Button
                                 type="submit"
-                                className="bg-emerald-600 hover:bg-emerald-700 px-8"
-                            >
+                                className="bg-orange-600 hover:bg-orange-700 px-8">
                                 Abone Ol
                             </Button>
                         </form>
@@ -135,16 +132,16 @@ export function Footer() {
                 <div className="border-t border-gray-700 pt-8">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-400">
                         <p>
-                            © {new Date().getFullYear()} Tadilat Kapında. Tüm hakları saklıdır.
+                            © {new Date().getFullYear()} Tadilat Cebimde. Tüm hakları saklıdır.
                         </p>
                         <div className="flex gap-6">
-                            <Link href="/kvkk" className="hover:text-emerald-400 transition-colors">
+                            <Link href="/kvkk" className="hover:text-orange-400 transition-colors">
                                 KVKK
                             </Link>
-                            <Link href="/gizlilik" className="hover:text-emerald-400 transition-colors">
+                            <Link href="/gizlilik" className="hover:text-orange-400 transition-colors">
                                 Gizlilik
                             </Link>
-                            <Link href="/kullanim-kosullari" className="hover:text-emerald-400 transition-colors">
+                            <Link href="/kullanim-kosullari" className="hover:text-orange-400 transition-colors">
                                 Kullanım Koşulları
                             </Link>
                         </div>

@@ -33,12 +33,11 @@ export function Header() {
                     <motion.div
                         whileHover={{ scale: 1.05, rotate: 5 }}
                         transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                        className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-700"
-                    >
-                        <span className="text-2xl font-bold text-white">TK</span>
+                        className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-orange-500 to-orange-700">
+                        <span className="text-2xl font-bold text-white">TC</span>
                     </motion.div>
                     <div className="flex flex-col">
-                        <span className="text-xl font-bold text-emerald-700">Tadilat Kapında</span>
+                        <span className="text-xl font-bold text-orange-700">Tadilat Cebimde</span>
                         <span className="text-xs text-gray-600">Ev Tadilat Hizmetleri</span>
                     </div>
                 </Link>
@@ -50,10 +49,9 @@ export function Header() {
                             key={item.name}
                             href={item.href}
                             onClick={(e) => handleClick(e, item.href)}
-                            className="px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:text-emerald-600 hover:bg-emerald-50 rounded-md relative group"
-                        >
+                            className="px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:text-orange-600 hover:bg-orange-50 rounded-md relative group">
                             {item.name}
-                            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-emerald-600 group-hover:w-full transition-all duration-300" />
+                            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-600 group-hover:w-full transition-all duration-300" />
                         </Link>
                     ))}
                 </nav>
@@ -62,8 +60,7 @@ export function Header() {
                 <motion.button
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                    className="lg:hidden p-2 text-gray-700 hover:text-emerald-600"
-                >
+                    className="lg:hidden p-2 text-gray-700 hover:text-orange-600">
                     {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                 </motion.button>
             </div>
@@ -84,8 +81,7 @@ export function Header() {
                                     key={item.name}
                                     href={item.href}
                                     onClick={(e) => handleClick(e, item.href)}
-                                    className="block px-4 py-3 text-sm font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md transition-colors"
-                                >
+                                    className="block px-4 py-3 text-sm font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-md transition-colors">
                                     {item.name}
                                 </Link>
                             ))}

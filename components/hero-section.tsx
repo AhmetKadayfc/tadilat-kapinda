@@ -14,19 +14,19 @@ export function HeroSection() {
             icon: Camera,
             title: "Fotoğraf / Video Yükle",
             description: "Tadilat alanınızın fotoğrafını yükleyin",
-            color: "from-blue-500 to-blue-600",
+            color: "from-orange-500 to-orange-600",
         },
         {
             icon: Phone,
             title: "Personel Evime Gelsin",
             description: "Uzman ekibimiz evinize gelsin",
-            color: "from-emerald-500 to-emerald-600",
+            color: "from-orange-600 to-red-600",
         },
         {
             icon: Video,
             title: "Görüntülü Görüşme Başlat",
             description: "Hemen online görüşme yapın",
-            color: "from-purple-500 to-purple-600",
+            color: "from-amber-500 to-orange-500",
         },
     ]
 
@@ -40,7 +40,7 @@ export function HeroSection() {
         <>
             <div id="hakkimizda"></div>
             <div id="surdurulebilirlik"></div>
-            <section id="hizmetlerimiz" className="relative min-h-[90vh] flex items-center bg-gradient-to-br from-emerald-50 via-white to-blue-50">
+            <section id="hizmetlerimiz" className="relative min-h-[90vh] flex items-center bg-gradient-to-br from-orange-50 via-white to-amber-50">
                 {/* Background Pattern */}
                 <div className="absolute inset-0 bg-grid-pattern opacity-5" />
 
@@ -61,11 +61,11 @@ export function HeroSection() {
                                 transition={{ delay: 0.2, duration: 0.6 }}
                                 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight"
                             >
-                                <span className="bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
+                                <span className="bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
                                     Bir fotoğrafla başla,
                                 </span>
                                 <br />
-                                <span className="text-emerald-800">bir telefonla bitir.</span>
+                                <span className="text-orange-800">bir telefonla bitir.</span>
                             </motion.h1>
                             <motion.p
                                 initial={{ opacity: 0 }}
@@ -103,7 +103,7 @@ export function HeroSection() {
                                         transition={{ type: "spring", stiffness: 300, damping: 20 }}
                                     >
                                         <Card
-                                            className="group cursor-pointer border-2 border-transparent hover:border-emerald-200 hover:shadow-2xl transition-all duration-300"
+                                            className="group cursor-pointer border-2 border-transparent hover:border-orange-200 hover:shadow-2xl transition-all duration-300"
                                             onClick={() => handleActionClick(box.title)}
                                         >
                                             <CardContent className="p-8 text-center">
@@ -122,7 +122,7 @@ export function HeroSection() {
                                                 </p>
                                                 <Button
                                                     variant="outline"
-                                                    className="w-full group-hover:bg-emerald-600 group-hover:text-white transition-colors"
+                                                    className="w-full group-hover:bg-orange-600 group-hover:text-white transition-colors"
                                                 >
                                                     Hemen Başla
                                                 </Button>
@@ -145,10 +145,10 @@ export function HeroSection() {
                             transition={{ type: "spring", stiffness: 300, damping: 25 }}
                             className="fixed bottom-4 right-4 z-50"
                         >
-                            <div className="bg-white rounded-lg shadow-2xl p-4 max-w-sm border-2 border-emerald-500">
+                            <div className="bg-white rounded-lg shadow-2xl p-4 max-w-sm border-2 border-orange-500">
                                 <div className="flex items-center justify-between mb-2">
                                     <div className="flex items-center gap-2">
-                                        <MessageCircle className="h-5 w-5 text-emerald-600" />
+                                        <MessageCircle className="h-5 w-5 text-orange-600" />
                                         <span className="font-semibold text-gray-900">Canlı Destek</span>
                                     </div>
                                     <motion.button

@@ -48,9 +48,9 @@ export function VideoSection() {
                     <Card className="overflow-hidden shadow-2xl border-2 border-gray-200 p-0">
                         <CardContent className="p-0 relative group">
                             {/* Video Player */}
-                            <div className="relative aspect-video bg-gradient-to-br from-emerald-900 to-blue-900">
+                            <div className="relative aspect-video bg-gradient-to-br from-orange-900 to-amber-900">
                                 {/* Thumbnail/Placeholder */}
-                                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-emerald-600 to-blue-600">
+                                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-orange-600 to-amber-600">
                                     <div className="text-center text-white">
                                         <div className="mb-4">
                                             <div className="inline-flex h-32 w-32 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
@@ -58,7 +58,7 @@ export function VideoSection() {
                                             </div>
                                         </div>
                                         <h3 className="text-2xl font-bold mb-2">Cihan Esen</h3>
-                                        <p className="text-white/90">Tadilat Kapında Kullanım Rehberi</p>
+                                        <p className="text-white/90">Tadilat Cebimde Kullanım Rehberi</p>
                                         <p className="text-sm text-white/70 mt-2">30-40 saniye</p>
                                     </div>
                                 </div>
@@ -78,8 +78,7 @@ export function VideoSection() {
                                     <Button
                                         size="lg"
                                         onClick={togglePlay}
-                                        className="h-20 w-20 rounded-full bg-white/90 hover:bg-white text-emerald-600 shadow-2xl"
-                                    >
+                                        className="h-20 w-20 rounded-full bg-white/90 hover:bg-white text-orange-600 shadow-2xl">
                                         {isPlaying ? (
                                             <Pause className="h-10 w-10" />
                                         ) : (
@@ -132,7 +131,7 @@ export function VideoSection() {
                                             Cihan Esen - Kurucu
                                         </h4>
                                         <p className="text-gray-600 text-sm leading-relaxed">
-                                            Bu videoda, Tadilat Kapında platformunu nasıl kullanacağınızı,
+                                            Bu videoda, Tadilat Cebimde platformunu nasıl kullanacağınızı,
                                             nasıl fiyat teklifi alacağınızı ve hizmetlerimizden nasıl
                                             faydalanacağınızı adım adım anlatıyorum.
                                         </p>
@@ -163,9 +162,8 @@ export function VideoSection() {
                         ].map((step, index) => (
                             <div
                                 key={index}
-                                className="text-center p-6 rounded-lg bg-white border-2 border-gray-100 hover:border-emerald-200 transition-colors"
-                            >
-                                <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-emerald-700 text-white font-bold text-2xl mb-4">
+                                className="text-center p-6 rounded-lg bg-white border-2 border-gray-100 hover:border-orange-200 transition-colors">
+                                <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-orange-500 to-orange-700 text-white font-bold text-2xl mb-4">
                                     {step.number}
                                 </div>
                                 <h4 className="font-bold text-lg text-gray-900 mb-2">

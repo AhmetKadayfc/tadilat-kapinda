@@ -27,7 +27,7 @@ export default function GizlilikPage() {
                     <div className="prose prose-lg max-w-none">
                         <section className="mb-8">
                             <p className="text-gray-700 leading-relaxed">
-                                Tadilat Kapında olarak gizliliğinize önem veriyor ve kişisel verilerinizin korunması konusunda
+                                Tadilat Cebimde olarak gizliliğinize önem veriyor ve kişisel verilerinizin korunması konusunda
                                 azami hassasiyet gösteriyoruz. Bu Gizlilik Politikası, web sitemizi ziyaret ettiğinizde ve
                                 hizmetlerimizi kullandığınızda toplanan bilgilerin nasıl kullanıldığını açıklamaktadır.
                             </p>
@@ -183,9 +183,9 @@ export default function GizlilikPage() {
                             </p>
                             <div className="p-6 bg-gradient-to-br from-emerald-50 to-emerald-100/50 rounded-xl border border-emerald-200">
                                 <div className="space-y-2 text-gray-700">
-                                    <p><strong>E-posta:</strong> info@tadilatkapinda.com</p>
+                                    <p><strong>E-posta:</strong> info@tadilatcebimde.com</p>
                                     <p><strong>Telefon:</strong> +90 (212) XXX XX XX</p>
-                                    <p><strong>Adres:</strong> Tadilat Kapında, [Şirket Adresi], İstanbul, Türkiye</p>
+                                    <p><strong>Adres:</strong> Tadilat Cebimde, [Şirket Adresi], İstanbul, Türkiye</p>
                                 </div>
                             </div>
                         </section>

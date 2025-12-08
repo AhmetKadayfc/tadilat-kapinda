@@ -38,7 +38,7 @@ export default function KullanimKosullariPage() {
                         <section className="mb-8">
                             <h2 className="text-2xl font-semibold text-gray-900 mb-4">1. Genel Koşullar</h2>
                             <p className="text-gray-700 leading-relaxed">
-                                Bu kullanım koşulları, Tadilat Kapında web sitesi ve sunduğumuz hizmetler için geçerlidir.
+                                Bu kullanım koşulları, Tadilat Cebimde web sitesi ve sunduğumuz hizmetler için geçerlidir.
                                 Web sitemizi ziyaret ederek veya hizmetlerimizi kullanarak, bu koşullara uymayı kabul edersiniz.
                             </p>
                         </section>
@@ -48,7 +48,7 @@ export default function KullanimKosullariPage() {
 
                             <h3 className="text-xl font-semibold text-gray-800 mb-3 mt-6">2.1. Hizmet Kapsamı</h3>
                             <p className="text-gray-700 leading-relaxed mb-4">
-                                Tadilat Kapında, ev tadilat hizmetleri konusunda aracılık platformudur. Sunduğumuz hizmetler:
+                                Tadilat Cebimde, ev tadilat hizmetleri konusunda aracılık platformudur. Sunduğumuz hizmetler:
                             </p>
                             <ul className="list-disc pl-6 space-y-2 text-gray-700">
                                 <li>Tadilat taleplerinizi değerlendirme ve uygun ustalarla eşleştirme</li>
@@ -60,7 +60,7 @@ export default function KullanimKosullariPage() {
 
                             <h3 className="text-xl font-semibold text-gray-800 mb-3 mt-6">2.2. Hizmet Sınırlamaları</h3>
                             <p className="text-gray-700 leading-relaxed">
-                                Tadilat Kapında, hizmet sağlayıcılar ile müşteriler arasında bir platform görevi görmektedir.
+                                Tadilat Cebimde, hizmet sağlayıcılar ile müşteriler arasında bir platform görevi görmektedir.
                                 Fiili tadilat işleri, anlaşmalı ustalar ve firmalar tarafından gerçekleştirilmektedir.
                             </p>
                         </section>
@@ -141,7 +141,7 @@ export default function KullanimKosullariPage() {
 
                             <h3 className="text-xl font-semibold text-gray-800 mb-3 mt-6">5.2. Sorumluluk Sınırlamaları</h3>
                             <p className="text-gray-700 leading-relaxed">
-                                Tadilat Kapında, platform hizmetleri için sorumluluk kabul eder. Ancak, üçüncü taraf
+                                Tadilat Cebimde, platform hizmetleri için sorumluluk kabul eder. Ancak, üçüncü taraf
                                 hizmet sağlayıcıların eylemleri, doğal afetler veya kullanıcı kaynaklı hatalar için
                                 sorumluluğumuz sınırlıdır.
                             </p>
@@ -151,7 +151,7 @@ export default function KullanimKosullariPage() {
                             <h2 className="text-2xl font-semibold text-gray-900 mb-4">6. Fikri Mülkiyet Hakları</h2>
                             <p className="text-gray-700 leading-relaxed mb-4">
                                 Web sitemizdeki tüm içerik, tasarım, logo, metin, grafik ve diğer materyaller
-                                Tadilat Kapında'nın mülkiyetindedir ve telif hakkı yasaları ile korunmaktadır.
+                                Tadilat Cebimde'nin mülkiyetindedir ve telif hakkı yasaları ile korunmaktadır.
                             </p>
                             <p className="text-gray-700 leading-relaxed">
                                 İçerikleri, yazılı izin almadan kopyalayamaz, çoğaltamaz veya ticari amaçla kullanamazsınız.
@@ -226,8 +226,8 @@ export default function KullanimKosullariPage() {
                             </p>
                             <div className="p-6 bg-gradient-to-br from-emerald-50 to-emerald-100/50 rounded-xl border border-emerald-200">
                                 <div className="space-y-2 text-gray-700">
-                                    <p><strong>Şirket:</strong> Tadilat Kapında</p>
-                                    <p><strong>E-posta:</strong> info@tadilatkapinda.com</p>
+                                    <p><strong>Şirket:</strong> Tadilat Cebimde</p>
+                                    <p><strong>E-posta:</strong> info@tadilatcebimde.com</p>
                                     <p><strong>Telefon:</strong> +90 (212) XXX XX XX</p>
                                     <p><strong>Adres:</strong> [Şirket Adresi], İstanbul, Türkiye</p>
                                     <p><strong>Çalışma Saatleri:</strong> Hafta içi 09:00 - 18:00</p>
@@ -241,7 +241,7 @@ export default function KullanimKosullariPage() {
                                 <strong>Yürürlük Tarihi:</strong> 8 Aralık 2025
                             </p>
                             <p className="text-sm text-gray-700">
-                                Bu kullanım koşullarını kabul ederek, Tadilat Kapında hizmetlerini kullanmaya başlayabilirsiniz.
+                                Bu kullanım koşullarını kabul ederek, Tadilat Cebimde hizmetlerini kullanmaya başlayabilirsiniz.
                                 Güvenli ve kaliteli hizmet için teşekkür ederiz.
                             </p>
                         </div>

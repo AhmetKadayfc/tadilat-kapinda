@@ -23,7 +23,7 @@ export default function KVKKPage() {
                         <section className="mb-8">
                             <h2 className="text-2xl font-semibold text-gray-900 mb-4">1. Veri Sorumlusu</h2>
                             <p className="text-gray-700 leading-relaxed">
-                                Tadilat Kapında olarak, 6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") kapsamında veri sorumlusu sıfatıyla,
+                                Tadilat Cebimde olarak, 6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") kapsamında veri sorumlusu sıfatıyla,
                                 kişisel verilerinizi aşağıda açıklanan kapsamda işlemekteyiz.
                             </p>
                         </section>
@@ -87,12 +87,12 @@ export default function KVKKPage() {
                             <h2 className="text-2xl font-semibold text-gray-900 mb-4">6. İletişim</h2>
                             <p className="text-gray-700 leading-relaxed">
                                 Kişisel verileriniz ile ilgili taleplerinizi, KVKK kapsamında haklarınızı kullanmak için
-                                <strong> info@tadilatkapinda.com</strong> e-posta adresinden veya aşağıdaki adrese yazılı olarak
+                                <strong> info@tadilatcebimde.com</strong> e-posta adresinden veya aşağıdaki adrese yazılı olarak
                                 başvurabilirsiniz.
                             </p>
                             <div className="mt-4 p-4 bg-emerald-50 rounded-lg border border-emerald-200">
                                 <p className="text-gray-700">
-                                    <strong>Adres:</strong> Tadilat Kapında<br />
+                                    <strong>Adres:</strong> Tadilat Cebimde<br />
                                     [Şirket Adresi]<br />
                                     İstanbul, Türkiye
                                 </p>
