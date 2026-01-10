@@ -15,6 +15,7 @@ interface ActionDialogProps {
     onSubmit?: () => void
     submitLabel?: string
     hideFooter?: boolean
+    hideCancelButton?: boolean
 }
 
 const TOTAL_TIME = 30 * 60 // 30 minutes in seconds
@@ -27,7 +28,8 @@ export function ActionDialog({
     children,
     onSubmit,
     submitLabel = "Gönder",
-    hideFooter = false
+    hideFooter = false,
+    hideCancelButton = false
 }: ActionDialogProps) {
     const [timeRemaining, setTimeRemaining] = useState(TOTAL_TIME)
 
@@ -114,7 +116,7 @@ export function ActionDialog({
                 </DialogHeader>
 
                 {/* Content Body - Scrollable */}
-                <div className="flex-1 overflow-y-auto p-6">
+                <div className="flex-1 overflow-y-auto px-4">
                     {children ? (
                         isValidElement(children) 
                             ? cloneElement(children as React.ReactElement<Record<string, unknown>>, { remainingTime: timeRemaining })
@@ -137,14 +139,16 @@ export function ActionDialog({
                 {/* Footer with Action Buttons */}
                 {!hideFooter && (
                     <DialogFooter className="border-t bg-gray-50 p-6 flex-row justify-end gap-3">
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={handleCancel}
-                            className="min-w-[120px]"
-                        >
-                            İptal Et
-                        </Button>
+                        {!hideCancelButton && (
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={handleCancel}
+                                className="min-w-[120px]"
+                            >
+                                İptal Et
+                            </Button>
+                        )}
                         <Button
                             type="button"
                             onClick={handleSubmit}

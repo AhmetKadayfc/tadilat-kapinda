@@ -7,7 +7,18 @@ import { Camera, Phone, Video } from "lucide-react"
 import { motion } from "framer-motion"
 import { ActionDialog } from "@/components/action-dialog"
 import { PhotoUploadContent } from "@/components/photo-upload-content"
+import { PersonnelChatContent } from "@/components/personnel-chat-content"
 import { toast } from "sonner"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 type ActionBox = {
     icon: typeof Camera | typeof Phone | typeof Video
@@ -20,6 +31,8 @@ type ActionBox = {
 export function HeroSection() {
     const [openDialog, setOpenDialog] = useState<number | null>(null)
     const [hidePhotoFooter, setHidePhotoFooter] = useState(false)
+    const [hasActiveChat, setHasActiveChat] = useState(false)
+    const [showEndChatConfirmation, setShowEndChatConfirmation] = useState(false)
 
     const actionBoxes: ActionBox[] = [
         {
@@ -194,6 +207,34 @@ export function HeroSection() {
                         )
                     }
 
+                    // Personnel Chat Dialog (index 1)
+                    if (index === 1) {
+                        return (
+                            <ActionDialog
+                                key={`${index}-${openDialog === index}`}
+                                isOpen={openDialog === index}
+                                onClose={handleCloseDialog}
+                                title={box.title}
+                                description={box.dialogDescription}
+                                submitLabel="Konuşmayı Bitir"
+                                hideCancelButton={true}
+                                onSubmit={() => {
+                                    // Eğer aktif konuşma varsa kullanıcıyı uyar
+                                    if (hasActiveChat) {
+                                        setShowEndChatConfirmation(true)
+                                    } else {
+                                        // Konuşma başlamamışsa direkt kapat
+                                        handleCloseDialog()
+                                    }
+                                }}
+                            >
+                                <PersonnelChatContent
+                                    onMessagesChange={(count) => setHasActiveChat(count > 1)}
+                                />
+                            </ActionDialog>
+                        )
+                    }
+
                     // Other dialogs - placeholder for now
                     return (
                         <ActionDialog
@@ -208,6 +249,33 @@ export function HeroSection() {
                     )
                 })}
             </section>
+
+            {/* End Chat Confirmation Dialog */}
+            <AlertDialog open={showEndChatConfirmation} onOpenChange={setShowEndChatConfirmation}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Konuşmayı Bitirmek İstiyor musunuz?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Devam eden bir konuşmanız var. Konuşmayı bitirirseniz, uzmanımızla olan görüşmeniz sonlandırılacaktır.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>İptal Et</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={() => {
+                                toast.success("Konuşma sonlandırıldı", {
+                                    description: "Ekibimiz en kısa sürede sizinle iletişime geçecek.",
+                                })
+                                setShowEndChatConfirmation(false)
+                                setHasActiveChat(false)
+                                handleCloseDialog()
+                            }}
+                        >
+                            Evet, Bitir
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </>
     )
 }
