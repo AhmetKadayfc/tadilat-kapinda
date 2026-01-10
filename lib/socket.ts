@@ -1,8 +1,8 @@
 import { io, Socket } from "socket.io-client"
 
 // Socket.IO connection configuration
-// Connect to the same server where Next.js is running
-const SOCKET_URL = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'
+// Use NEXT_PUBLIC_SOCKET_URL env var if available, otherwise default to window.location.origin
+const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000')
 
 let socket: Socket | null = null
 let isConnecting = false
