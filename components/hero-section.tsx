@@ -1,45 +1,60 @@
 "use client"
 
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Camera, Phone, Video } from "lucide-react"
 import { motion } from "framer-motion"
-import { toast } from "sonner"
+import { ActionDialog } from "@/components/action-dialog"
+
+type ActionBox = {
+    icon: typeof Camera | typeof Phone | typeof Video
+    title: string
+    description: string
+    color: string
+    dialogDescription: string
+}
 
 export function HeroSection() {
-    const actionBoxes = [
+    const [openDialog, setOpenDialog] = useState<number | null>(null)
+
+    const actionBoxes: ActionBox[] = [
         {
             icon: Camera,
             title: "Fotoğraf / Video Yükle",
             description: "Tadilat alanınızın fotoğrafını yükleyin",
             color: "from-orange-500 to-orange-600",
+            dialogDescription: "Tadilat yapmak istediğiniz alanın fotoğraf veya videosunu yükleyerek hızlıca fiyat teklifi alabilirsiniz.",
         },
         {
             icon: Phone,
             title: "Personel Evime Gelsin",
             description: "Uzman ekibimiz evinize gelsin",
             color: "from-orange-600 to-red-600",
+            dialogDescription: "Uzman ekibimiz size en uygun zamanda evinize gelerek ücretsiz keşif yapacaktır.",
         },
         {
             icon: Video,
             title: "Görüntülü Görüşme Başlat",
             description: "Hemen online görüşme yapın",
             color: "from-amber-500 to-orange-500",
+            dialogDescription: "Uzmanlarımızla görüntülü görüşme yaparak anlık olarak tadilat ihtiyacınızı değerlendirebilirsiniz.",
         },
     ]
 
-    const handleActionClick = (title: string) => {
-        toast.success("İsteğiniz alındı!", {
-            description: `${title} için size en kısa sürede dönüş yapılacak.`,
-            duration: 34000,
-        })
+    const handleActionClick = (index: number) => {
+        setOpenDialog(index)
+    }
+
+    const handleCloseDialog = () => {
+        setOpenDialog(null)
     }
 
     return (
         <>
             <div id="hakkimizda"></div>
             <div id="surdurulebilirlik"></div>
-            <section id="hizmetlerimiz" className="relative min-h-[90vh] flex items-center bg-gradient-to-br from-orange-50 via-white to-amber-50">
+            <section id="hizmetlerimiz" className="relative min-h-[90vh] flex items-center bg-linear-to-br from-orange-50 via-white to-amber-50">
                 {/* Background Pattern */}
                 <div className="absolute inset-0 bg-grid-pattern opacity-5" />
 
@@ -60,7 +75,7 @@ export function HeroSection() {
                                 transition={{ delay: 0.2, duration: 0.6 }}
                                 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight"
                             >
-                                <span className="bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
+                                <span className="bg-linear-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
                                     Bir fotoğrafla başla,
                                 </span>
                                 <br />
@@ -103,13 +118,13 @@ export function HeroSection() {
                                     >
                                         <Card
                                             className="group cursor-pointer border-2 border-transparent hover:border-orange-200 hover:shadow-2xl transition-all duration-300"
-                                            onClick={() => handleActionClick(box.title)}
+                                            onClick={() => handleActionClick(index)}
                                         >
                                             <CardContent className="p-8 text-center">
                                                 <motion.div
                                                     whileHover={{ rotate: [0, -10, 10, -10, 0], scale: 1.1 }}
                                                     transition={{ duration: 0.5 }}
-                                                    className={`inline-flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br ${box.color} mb-6`}
+                                                    className={`inline-flex h-20 w-20 items-center justify-center rounded-2xl bg-linear-to-br ${box.color} mb-6`}
                                                 >
                                                     <box.icon className="h-10 w-10 text-white" />
                                                 </motion.div>
@@ -133,6 +148,19 @@ export function HeroSection() {
                         </div>
                     </div>
                 </div>
+
+                {/* Action Dialogs */}
+                {actionBoxes.map((box, index) => (
+                    <ActionDialog
+                        key={`${index}-${openDialog === index}`}
+                        isOpen={openDialog === index}
+                        onClose={handleCloseDialog}
+                        title={box.title}
+                        description={box.dialogDescription}
+                    >
+                        {/* Generic placeholder content - will be customized later */}
+                    </ActionDialog>
+                ))}
             </section>
         </>
     )
