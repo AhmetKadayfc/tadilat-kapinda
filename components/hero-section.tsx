@@ -8,6 +8,7 @@ import { motion } from "framer-motion"
 import { ActionDialog } from "@/components/action-dialog"
 import { PhotoUploadContent } from "@/components/photo-upload-content"
 import { PersonnelChatContent } from "@/components/personnel-chat-content"
+import { VideoCallContent } from "@/components/video-call-content"
 import { toast } from "sonner"
 import {
     AlertDialog,
@@ -33,6 +34,7 @@ export function HeroSection() {
     const [hidePhotoFooter, setHidePhotoFooter] = useState(false)
     const [hasActiveChat, setHasActiveChat] = useState(false)
     const [showEndChatConfirmation, setShowEndChatConfirmation] = useState(false)
+    const [showEndCallConfirmation, setShowEndCallConfirmation] = useState(false)
 
     const actionBoxes: ActionBox[] = [
         {
@@ -235,7 +237,26 @@ export function HeroSection() {
                         )
                     }
 
-                    // Other dialogs - placeholder for now
+                    // Video Call Dialog (index 2)
+                    if (index === 2) {
+                        return (
+                            <ActionDialog
+                                key={`${index}-${openDialog === index}`}
+                                isOpen={openDialog === index}
+                                onClose={handleCloseDialog}
+                                title={box.title}
+                                description={box.dialogDescription}
+                                hideFooter={true}
+                            >
+                                <VideoCallContent 
+                                    remainingTime={0}
+                                    onEndCall={() => setShowEndCallConfirmation(true)}
+                                />
+                            </ActionDialog>
+                        )
+                    }
+
+                    // Other dialogs - placeholder for future
                     return (
                         <ActionDialog
                             key={`${index}-${openDialog === index}`}
@@ -272,6 +293,58 @@ export function HeroSection() {
                             }}
                         >
                             Evet, Bitir
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
+            {/* End Call Confirmation Dialog */}
+            <AlertDialog open={showEndCallConfirmation} onOpenChange={setShowEndCallConfirmation}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Aramayı Sonlandırmak İstiyor musunuz?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Görüntülü görüşmeyi sonlandırmak üzeresiniz. Uzmanımızla olan bağlantınız kesilecektir.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>İptal Et</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={() => {
+                                toast.success("Görüşme sonlandırıldı", {
+                                    description: "Ekibimiz en kısa sürede sizinle iletişime geçecek.",
+                                })
+                                setShowEndCallConfirmation(false)
+                                handleCloseDialog()
+                            }}
+                        >
+                            Evet, Sonlandır
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
+            {/* End Call Confirmation Dialog */}
+            <AlertDialog open={showEndCallConfirmation} onOpenChange={setShowEndCallConfirmation}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Aramayı Sonlandırmak İstiyor musunuz?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Görüntülü görüşmeyi sonlandırmak üzeresiniz. Uzmanımızla olan bağlantınız kesilecektir.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>İptal Et</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={() => {
+                                toast.success("Görüşme sonlandırıldı", {
+                                    description: "Ekibimiz en kısa sürede sizinle iletişime geçecek.",
+                                })
+                                setShowEndCallConfirmation(false)
+                                handleCloseDialog()
+                            }}
+                        >
+                            Evet, Sonlandır
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>

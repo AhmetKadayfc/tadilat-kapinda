@@ -77,7 +77,7 @@ export function ActionDialog({
 
     return (
         <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-            <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-hidden flex flex-col p-0" showCloseButton={false}>
+            <DialogContent className="sm:max-w-5xl max-h-[95vh] overflow-hidden flex flex-col p-0" showCloseButton={false}>
                 {/* Header with Timer */}
                 <DialogHeader className="border-b bg-linear-to-r from-orange-50 to-amber-50 p-6 space-y-4">
 
