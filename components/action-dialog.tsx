@@ -1,10 +1,10 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState, useCallback, cloneElement, isValidElement } from "react"
 import { Dialog, DialogHeader, DialogContent, DialogDescription, DialogFooter, DialogTitle } from "@/components/ui/dialog"
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
-import { Clock, X } from "lucide-react"
+import { Clock } from "lucide-react"
 
 interface ActionDialogProps {
     isOpen: boolean
@@ -12,11 +12,23 @@ interface ActionDialogProps {
     title: string
     description: string
     children?: React.ReactNode
+    onSubmit?: () => void
+    submitLabel?: string
+    hideFooter?: boolean
 }
 
 const TOTAL_TIME = 30 * 60 // 30 minutes in seconds
 
-export function ActionDialog({ isOpen, onClose, title, description, children }: ActionDialogProps) {
+export function ActionDialog({ 
+    isOpen, 
+    onClose, 
+    title, 
+    description, 
+    children,
+    onSubmit,
+    submitLabel = "Gönder",
+    hideFooter = false
+}: ActionDialogProps) {
     const [timeRemaining, setTimeRemaining] = useState(TOTAL_TIME)
 
     // Timer countdown logic
@@ -43,17 +55,26 @@ export function ActionDialog({ isOpen, onClose, title, description, children }: 
     const progressPercentage = (timeRemaining / TOTAL_TIME) * 100
 
     const handleSubmit = useCallback(() => {
-        // Handle form submission logic here
-        console.log("Form submitted")
-        onClose()
-    }, [onClose])
+        if (onSubmit) {
+            onSubmit()
+        } else {
+            console.log("Form submitted")
+            onClose()
+        }
+    }, [onSubmit, onClose])
 
     const handleCancel = useCallback(() => {
         onClose()
     }, [onClose])
 
+    const handleOpenChange = useCallback(() => {
+        // Prevent closing from outside clicks or ESC key
+        // Users can only close via Cancel or Submit buttons
+        return
+    }, [])
+
     return (
-        <Dialog open={isOpen} onOpenChange={onClose}>
+        <Dialog open={isOpen} onOpenChange={handleOpenChange}>
             <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-hidden flex flex-col p-0" showCloseButton={false}>
                 {/* Header with Timer */}
                 <DialogHeader className="border-b bg-linear-to-r from-orange-50 to-amber-50 p-6 space-y-4">
@@ -94,7 +115,11 @@ export function ActionDialog({ isOpen, onClose, title, description, children }: 
 
                 {/* Content Body - Scrollable */}
                 <div className="flex-1 overflow-y-auto p-6">
-                    {children || (
+                    {children ? (
+                        isValidElement(children) 
+                            ? cloneElement(children as React.ReactElement<Record<string, unknown>>, { remainingTime: timeRemaining })
+                            : children
+                    ) : (
                         <div className="space-y-4">
                             {/* Generic Placeholder Content */}
                             <div className="min-h-[300px] flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg">
@@ -110,23 +135,25 @@ export function ActionDialog({ isOpen, onClose, title, description, children }: 
                 </div>
 
                 {/* Footer with Action Buttons */}
-                <DialogFooter className="border-t bg-gray-50 p-6 flex-row justify-end gap-3">
-                    <Button
-                        type="button"
-                        variant="outline"
-                        onClick={handleCancel}
-                        className="min-w-[120px]"
-                    >
-                        İptal Et
-                    </Button>
-                    <Button
-                        type="button"
-                        onClick={handleSubmit}
-                        className="min-w-[120px] bg-linear-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700"
-                    >
-                        Gönder
-                    </Button>
-                </DialogFooter>
+                {!hideFooter && (
+                    <DialogFooter className="border-t bg-gray-50 p-6 flex-row justify-end gap-3">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={handleCancel}
+                            className="min-w-[120px]"
+                        >
+                            İptal Et
+                        </Button>
+                        <Button
+                            type="button"
+                            onClick={handleSubmit}
+                            className="min-w-[120px] bg-linear-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700"
+                        >
+                            {submitLabel}
+                        </Button>
+                    </DialogFooter>
+                )}
             </DialogContent>
         </Dialog>
     )

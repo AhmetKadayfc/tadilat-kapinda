@@ -1,11 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Camera, Phone, Video } from "lucide-react"
 import { motion } from "framer-motion"
 import { ActionDialog } from "@/components/action-dialog"
+import { PhotoUploadContent } from "@/components/photo-upload-content"
+import { toast } from "sonner"
 
 type ActionBox = {
     icon: typeof Camera | typeof Phone | typeof Video
@@ -17,6 +19,7 @@ type ActionBox = {
 
 export function HeroSection() {
     const [openDialog, setOpenDialog] = useState<number | null>(null)
+    const [hidePhotoFooter, setHidePhotoFooter] = useState(false)
 
     const actionBoxes: ActionBox[] = [
         {
@@ -48,7 +51,24 @@ export function HeroSection() {
 
     const handleCloseDialog = () => {
         setOpenDialog(null)
+        setHidePhotoFooter(false) // Reset footer visibility when dialog closes
     }
+
+    const handlePhotoUploadSubmit = useCallback((files: File[], message: string) => {
+        // Simulate sending to backend
+        console.log("Uploading files:", files)
+        console.log("Message:", message)
+        
+        toast.success("Fotoğraflarınız başarıyla gönderildi!", {
+            description: "Profesyonel ekibimiz en kısa sürede size dönüş yapacak.",
+        })
+
+        // Hide footer after successful submission
+        setHidePhotoFooter(true)
+
+        // Note: In a real app, you would send this to your backend here
+        // Example: await uploadPhotos(files, message)
+    }, [])
 
     return (
         <>
@@ -150,17 +170,43 @@ export function HeroSection() {
                 </div>
 
                 {/* Action Dialogs */}
-                {actionBoxes.map((box, index) => (
-                    <ActionDialog
-                        key={`${index}-${openDialog === index}`}
-                        isOpen={openDialog === index}
-                        onClose={handleCloseDialog}
-                        title={box.title}
-                        description={box.dialogDescription}
-                    >
-                        {/* Generic placeholder content - will be customized later */}
-                    </ActionDialog>
-                ))}
+                {actionBoxes.map((box, index) => {
+                    // Photo Upload Dialog (index 0)
+                    if (index === 0) {
+                        return (
+                            <ActionDialog
+                                key={`${index}-${openDialog === index}`}
+                                isOpen={openDialog === index}
+                                hideFooter={hidePhotoFooter}
+                                onClose={handleCloseDialog}
+                                title={box.title}
+                                description={box.dialogDescription}
+                                onSubmit={() => {
+                                    // Trigger the submit from PhotoUploadContent
+                                    document.getElementById('photo-upload-submit')?.click()
+                                }}
+                            >
+                                <PhotoUploadContent 
+                                    onSubmit={handlePhotoUploadSubmit} 
+                                    remainingTime={0}
+                                />
+                            </ActionDialog>
+                        )
+                    }
+
+                    // Other dialogs - placeholder for now
+                    return (
+                        <ActionDialog
+                            key={`${index}-${openDialog === index}`}
+                            isOpen={openDialog === index}
+                            onClose={handleCloseDialog}
+                            title={box.title}
+                            description={box.dialogDescription}
+                        >
+                            {/* Generic placeholder content - will be customized later */}
+                        </ActionDialog>
+                    )
+                })}
             </section>
         </>
     )
