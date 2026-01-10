@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { Button } from "@/components/ui/button"
-import { Video, VideoOff, Mic, MicOff, PhoneOff, User } from "lucide-react"
+import { Video, VideoOff, Mic, MicOff, PhoneOff } from "lucide-react"
 
 interface VideoCallContentProps {
     remainingTime: number
@@ -15,6 +15,8 @@ export function VideoCallContent({ remainingTime, onEndCall }: VideoCallContentP
     const [isCameraOn, setIsCameraOn] = useState(true)
     const [isMicOn, setIsMicOn] = useState(true)
     const [callDuration, setCallDuration] = useState(0)
+    const videoRef = useRef<HTMLVideoElement>(null)
+    const streamRef = useRef<MediaStream | null>(null)
 
     const formatCallDuration = (seconds: number) => {
         const mins = Math.floor(seconds / 60)
@@ -36,6 +38,50 @@ export function VideoCallContent({ remainingTime, onEndCall }: VideoCallContentP
 
         return () => clearTimeout(connectTimer)
     }, [])
+
+    // Get user camera stream
+    useEffect(() => {
+        if (!isConnected || !isCameraOn) return
+
+        let mounted = true
+
+        const getUserCamera = async () => {
+            try {
+                const mediaStream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: 1280, height: 720 },
+                    audio: false
+                })
+
+                if (mounted && videoRef.current) {
+                    streamRef.current = mediaStream
+                    videoRef.current.srcObject = mediaStream
+                }
+            } catch (error) {
+                console.error("Kamera erişimi reddedildi:", error)
+            }
+        }
+
+        getUserCamera()
+
+        return () => {
+            mounted = false
+        }
+    }, [isConnected, isCameraOn])
+
+    // Stop stream when camera is turned off or component unmounts
+    useEffect(() => {
+        const currentVideo = videoRef.current
+        
+        return () => {
+            if (streamRef.current) {
+                streamRef.current.getTracks().forEach(track => track.stop())
+                streamRef.current = null
+                if (currentVideo) {
+                    currentVideo.srcObject = null
+                }
+            }
+        }
+    }, [isCameraOn])
 
     // Call duration counter
     useEffect(() => {
@@ -112,12 +158,13 @@ export function VideoCallContent({ remainingTime, onEndCall }: VideoCallContentP
                 {/* User's Video (Picture-in-Picture) */}
                 <div className="absolute top-4 right-4 w-48 h-36 bg-gray-800 rounded-lg overflow-hidden border-2 border-white shadow-lg">
                     {isCameraOn ? (
-                        <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-blue-900 to-blue-700">
-                            <div className="text-center">
-                                <User className="w-12 h-12 mx-auto text-white mb-2" />
-                                <p className="text-white text-xs">Kameranız açık</p>
-                            </div>
-                        </div>
+                        <video
+                            ref={videoRef}
+                            autoPlay
+                            playsInline
+                            muted
+                            className="w-full h-full object-cover"
+                        />
                     ) : (
                         <div className="w-full h-full flex items-center justify-center bg-gray-900">
                             <div className="text-center">

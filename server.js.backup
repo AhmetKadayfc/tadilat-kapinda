@@ -1,0 +1,262 @@
+/**
+ * Simple Socket.IO Backend Server for Admin-Client Chat
+ * 
+ * This is a basic implementation. For production, you should:
+ * - Add authentication
+ * - Add database storage for messages
+ * - Add proper error handling
+ * - Add logging
+ * - Add rate limiting
+ */
+
+const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
+const cors = require('cors');
+
+const app = express();
+app.use(cors());
+
+const server = http.createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: process.env.CLIENT_URL || "http://localhost:3000",
+        methods: ["GET", "POST"]
+    }
+});
+
+// In-memory storage (replace with database in production)
+const waitingClients = new Map();
+const activeChats = new Map();
+const onlineAdmins = new Set();
+const chatHistory = new Map();
+
+io.on('connection', (socket) => {
+    console.log('User connected:', socket.id);
+
+    // CLIENT EVENTS
+
+    // Client joins and waits for admin
+    socket.on('client:join', (data) => {
+        const { clientId, name } = data;
+        
+        waitingClients.set(clientId, {
+            id: clientId,
+            name: name,
+            socketId: socket.id,
+            joinedAt: Date.now(),
+            status: 'waiting'
+        });
+
+        // Join client's personal room
+        socket.join(`client-${clientId}`);
+
+        console.log(`Client ${name} (${clientId}) joined and waiting`);
+
+        // Notify all admins about new waiting client
+        io.to('admins').emit('admin:new-client', waitingClients.get(clientId));
+        
+        // Send updated waiting clients list to all admins
+        broadcastWaitingClients();
+    });
+
+    // Client leaves
+    socket.on('client:leave', (data) => {
+        const { clientId } = data;
+        
+        waitingClients.delete(clientId);
+        activeChats.delete(clientId);
+        
+        console.log(`Client ${clientId} left`);
+        
+        // Notify admin if they were in chat
+        io.to(`admin-${clientId}`).emit('chat:client-left');
+        
+        broadcastWaitingClients();
+    });
+
+    // ADMIN EVENTS
+
+    // Admin registers
+    socket.on('admin:register', (data) => {
+        const { adminId } = data;
+        
+        onlineAdmins.add(socket.id);
+        socket.join('admins');
+        
+        console.log(`Admin ${adminId} registered`);
+        
+        // Send current waiting clients list
+        socket.emit('admin:waiting-clients', Array.from(waitingClients.values()));
+    });
+
+    // Admin unregisters
+    socket.on('admin:unregister', (data) => {
+        onlineAdmins.delete(socket.id);
+        socket.leave('admins');
+        
+        console.log('Admin unregistered');
+    });
+
+    // Admin requests waiting clients
+    socket.on('admin:get-waiting-clients', () => {
+        socket.emit('admin:waiting-clients', Array.from(waitingClients.values()));
+    });
+
+    // Admin takes a client
+    socket.on('admin:take-client', (data) => {
+        const { clientId, adminId } = data;
+        
+        const client = waitingClients.get(clientId);
+        if (client) {
+            client.status = 'chatting';
+            waitingClients.set(clientId, client);
+            
+            activeChats.set(clientId, {
+                clientId,
+                adminId,
+                adminSocketId: socket.id,
+                clientSocketId: client.socketId,
+                startedAt: Date.now()
+            });
+            
+            console.log(`Admin ${adminId} took client ${clientId}`);
+            
+            broadcastWaitingClients();
+        }
+    });
+
+    // Admin joins chat
+    socket.on('admin:join-chat', (data) => {
+        const { clientId, adminId } = data;
+        
+        // Join admin-client room
+        socket.join(`chat-${clientId}`);
+        socket.join(`admin-${clientId}`);
+        
+        // Notify client that admin joined
+        io.to(`client-${clientId}`).emit('chat:admin-joined', {
+            adminName: adminId
+        });
+        
+        // Send chat history if exists
+        const history = chatHistory.get(clientId) || [];
+        socket.emit('chat:history', history);
+        
+        // Send client info to admin
+        const client = waitingClients.get(clientId);
+        if (client) {
+            socket.emit('chat:client-info', { name: client.name });
+        }
+        
+        console.log(`Admin ${adminId} joined chat with ${clientId}`);
+    });
+
+    // Admin leaves chat
+    socket.on('admin:leave-chat', (data) => {
+        const { clientId } = data;
+        
+        socket.leave(`chat-${clientId}`);
+        socket.leave(`admin-${clientId}`);
+        
+        // Notify client
+        io.to(`client-${clientId}`).emit('chat:admin-left');
+        
+        // Update client status back to waiting
+        const client = waitingClients.get(clientId);
+        if (client) {
+            client.status = 'waiting';
+            waitingClients.set(clientId, client);
+        }
+        
+        activeChats.delete(clientId);
+        broadcastWaitingClients();
+        
+        console.log(`Admin left chat with ${clientId}`);
+    });
+
+    // Admin ends chat
+    socket.on('admin:end-chat', (data) => {
+        const { clientId } = data;
+        
+        // Notify client
+        io.to(`client-${clientId}`).emit('chat:ended');
+        
+        // Clean up
+        socket.leave(`chat-${clientId}`);
+        socket.leave(`admin-${clientId}`);
+        waitingClients.delete(clientId);
+        activeChats.delete(clientId);
+        chatHistory.delete(clientId);
+        
+        broadcastWaitingClients();
+        
+        console.log(`Admin ended chat with ${clientId}`);
+    });
+
+    // CHAT MESSAGES
+
+    // Send message in chat
+    socket.on('chat:send-message', (data) => {
+        const { clientId, ...messageData } = data;
+        
+        // Store message in history
+        if (!chatHistory.has(clientId)) {
+            chatHistory.set(clientId, []);
+        }
+        chatHistory.get(clientId).push(messageData);
+        
+        // Broadcast message to both client and admin in this chat
+        io.to(`chat-${clientId}`).emit('chat:message', messageData);
+        io.to(`client-${clientId}`).emit('chat:message', messageData);
+        io.to(`admin-${clientId}`).emit('chat:message', messageData);
+        
+        console.log(`Message in chat ${clientId}:`, messageData.message.substring(0, 50));
+    });
+
+    // Admin typing indicator
+    socket.on('chat:admin-typing', (data) => {
+        const { clientId } = data;
+        io.to(`client-${clientId}`).emit('chat:admin-typing');
+    });
+
+    // DISCONNECT
+
+    socket.on('disconnect', () => {
+        console.log('User disconnected:', socket.id);
+        
+        // Clean up if it was an admin
+        onlineAdmins.delete(socket.id);
+        
+        // Clean up if it was a client
+        for (const [clientId, client] of waitingClients.entries()) {
+            if (client.socketId === socket.id) {
+                waitingClients.delete(clientId);
+                activeChats.delete(clientId);
+                broadcastWaitingClients();
+                break;
+            }
+        }
+    });
+});
+
+// Helper function to broadcast waiting clients to all admins
+function broadcastWaitingClients() {
+    io.to('admins').emit('admin:waiting-clients', Array.from(waitingClients.values()));
+}
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+    res.json({
+        status: 'OK',
+        waitingClients: waitingClients.size,
+        activeChats: activeChats.size,
+        onlineAdmins: onlineAdmins.size
+    });
+});
+
+const PORT = process.env.PORT || 3001;
+
+server.listen(PORT, () => {
+    console.log(`Socket.IO server running on port ${PORT}`);
+});
