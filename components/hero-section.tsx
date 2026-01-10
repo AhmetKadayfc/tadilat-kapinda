@@ -2,13 +2,11 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Camera, Phone, Video, MessageCircle } from "lucide-react"
-import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { Camera, Phone, Video } from "lucide-react"
+import { motion } from "framer-motion"
+import { toast } from "sonner"
 
 export function HeroSection() {
-    const [chatOpen, setChatOpen] = useState(false)
-
     const actionBoxes = [
         {
             icon: Camera,
@@ -31,9 +29,10 @@ export function HeroSection() {
     ]
 
     const handleActionClick = (title: string) => {
-        setChatOpen(true)
-        // Burada canlı mesaj paneli açılacak
-        console.log(`${title} tıklandı - Canlı mesaj paneli açılıyor...`)
+        toast.success("İsteğiniz alındı!", {
+            description: `${title} için size en kısa sürede dönüş yapılacak.`,
+            duration: 34000,
+        })
     }
 
     return (
@@ -134,39 +133,6 @@ export function HeroSection() {
                         </div>
                     </div>
                 </div>
-
-                {/* Chat Panel Indicator */}
-                <AnimatePresence>
-                    {chatOpen && (
-                        <motion.div
-                            initial={{ opacity: 0, y: 50, scale: 0.8 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: 50, scale: 0.8 }}
-                            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                            className="fixed bottom-4 right-4 z-50"
-                        >
-                            <div className="bg-white rounded-lg shadow-2xl p-4 max-w-sm border-2 border-orange-500">
-                                <div className="flex items-center justify-between mb-2">
-                                    <div className="flex items-center gap-2">
-                                        <MessageCircle className="h-5 w-5 text-orange-600" />
-                                        <span className="font-semibold text-gray-900">Canlı Destek</span>
-                                    </div>
-                                    <motion.button
-                                        whileHover={{ scale: 1.1, rotate: 90 }}
-                                        whileTap={{ scale: 0.9 }}
-                                        onClick={() => setChatOpen(false)}
-                                        className="text-gray-500 hover:text-gray-700"
-                                    >
-                                        ×
-                                    </motion.button>
-                                </div>
-                                <p className="text-sm text-gray-600">
-                                    Mesajınızı yazın, size yardımcı olalım...
-                                </p>
-                            </div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
             </section>
         </>
     )
