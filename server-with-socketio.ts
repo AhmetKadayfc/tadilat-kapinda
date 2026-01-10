@@ -210,6 +210,7 @@ app.prepare().then(() => {
             chatHistory.get(clientId).push(messageData)
             
             // Send message to the chat room (both admin and client are in this room)
+            // This ensures everyone in the conversation receives it exactly once
             io.to(`chat-${clientId}`).emit("chat:message", messageData)
             
             console.log(`📨 Message in chat ${clientId} from ${messageData.senderType}:`, messageData.message.substring(0, 50))

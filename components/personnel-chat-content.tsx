@@ -67,131 +67,117 @@ export function PersonnelChatContent({ onMessagesChange }: PersonnelChatContentP
 
         window.addEventListener("beforeunload", handleBeforeUnload)
 
-        // Setup event handlers
-        const setupSocketListeners = () => {
-            // Remove existing listeners first
-            socket.off("connect")
-            socket.off("disconnect")
-            socket.off("chat:admin-joined")
-            socket.off("chat:message")
-            socket.off("chat:admin-typing")
-            socket.off("chat:admin-left")
-            socket.off("chat:ended")
+        // Define event handlers
+        const onConnect = () => {
+            console.log("🔌 Client chat connected to socket")
+            setIsConnected(true)
+            setIsConnecting(false)
 
-            socket.on("connect", () => {
-                console.log("🔌 Client chat connected to socket")
-                setIsConnected(true)
-                setIsConnecting(false)
-
-                // Register as waiting client on connect/reconnect
-                if (!hasJoinedRef.current) {
-                    socket.emit("client:join", {
-                        clientId: newClientId,
-                        name: name,
-                    })
-                    hasJoinedRef.current = true
-                    console.log("👤 Client joined:", newClientId)
-                    
-                    toast.success("Bağlantı kuruldu", {
-                        description: "Uzmanımız yakında sizinle iletişime geçecek",
-                    })
-                }
-            })
-
-            socket.on("disconnect", (reason) => {
-                console.log("❌ Client chat disconnected:", reason)
-                setIsConnected(false)
-                hasJoinedRef.current = false
+            // Register as waiting client on connect/reconnect
+            if (!hasJoinedRef.current) {
+                socket.emit("client:join", {
+                    clientId: newClientId,
+                    name: name,
+                })
+                hasJoinedRef.current = true
+                console.log("👤 Client joined:", newClientId)
                 
-                if (reason !== "io client disconnect") {
-                    toast.error("Bağlantı kesildi", {
-                        description: "Sunucuya yeniden bağlanılıyor...",
-                    })
-                }
-            })
-
-            // Admin joined the chat
-            socket.on("chat:admin-joined", (data: { adminName: string }) => {
-                console.log("👔 Admin joined:", data.adminName)
-                setAdminName(data.adminName)
-                setWaitingForAdmin(false)
-
-                toast.success("Uzman bağlandı", {
-                    description: `${data.adminName} sohbete katıldı`,
+                toast.success("Bağlantı kuruldu", {
+                    description: "Uzmanımız yakında sizinle iletişime geçecek",
                 })
-            })
+            }
+        }
 
-            // Receive chat history
-            socket.on("chat:history", (history: ChatMessage[]) => {
-                console.log("📜 Client received chat history:", history.length, "messages")
-                const convertedMessages: Message[] = history.map((msg) => ({
-                    id: msg.id,
-                    text: msg.message,
-                    sender: msg.senderType === "admin" ? "professional" : "user",
-                    timestamp: new Date(msg.timestamp),
-                }))
-                setMessages(convertedMessages)
-            })
-
-            // Receive chat messages
-            socket.on("chat:message", (message: ChatMessage) => {
-                // Ignore messages we just sent (optimistic update already added them)
-                if (sentMessageIdsRef.current.has(message.id)) {
-                    sentMessageIdsRef.current.delete(message.id)
-                    return
-                }
-                
-                console.log("💬 Message received:", message.senderType, message.message.substring(0, 20))
-                const newMessage: Message = {
-                    id: message.id,
-                    text: message.message,
-                    sender: message.senderType === "admin" ? "professional" : "user",
-                    timestamp: new Date(message.timestamp),
-                }
-                setMessages((prev) => [...prev, newMessage])
-
-                // Show typing indicator briefly before message
-                if (message.senderType === "admin") {
-                    setIsTyping(false)
-                }
-            })
-
-            // Admin is typing
-            socket.on("chat:admin-typing", () => {
-                setIsTyping(true)
-                setTimeout(() => setIsTyping(false), 3000)
-            })
-
-            // Admin left the chat
-            socket.on("chat:admin-left", () => {
-                console.log("👋 Admin left notification")
-                setWaitingForAdmin(true)
-                setAdminName("")
-                toast.info("Uzman sohbetten ayrıldı", {
-                    description: "Başka bir uzman sizinle iletişime geçecek",
+        const onDisconnect = (reason: any) => {
+            console.log("❌ Client chat disconnected:", reason)
+            setIsConnected(false)
+            hasJoinedRef.current = false
+            
+            if (reason !== "io client disconnect") {
+                toast.error("Bağlantı kesildi", {
+                    description: "Sunucuya yeniden bağlanılıyor...",
                 })
-            })
+            }
+        }
 
-            // Chat ended
-            socket.on("chat:ended", () => {
-                console.log("🔚 Chat ended notification")
-                toast.info("Sohbet sonlandırıldı", {
-                    description: "Ekibimiz en kısa sürede sizinle iletişime geçecek",
-                })
+        const onAdminJoined = (data: { adminName: string }) => {
+            console.log("👔 Admin joined:", data.adminName)
+            setAdminName(data.adminName)
+            setWaitingForAdmin(false)
+
+            toast.success("Uzman bağlandı", {
+                description: `${data.adminName} sohbete katıldı`,
             })
         }
 
-        setupSocketListeners()
+        const onHistory = (history: ChatMessage[]) => {
+            console.log("📜 Client received chat history:", history.length, "messages")
+            const convertedMessages: Message[] = history.map((msg) => ({
+                id: msg.id,
+                text: msg.message,
+                sender: msg.senderType === "admin" ? "professional" : "user",
+                timestamp: new Date(msg.timestamp),
+            }))
+            setMessages(convertedMessages)
+        }
+
+        const onMessage = (message: ChatMessage) => {
+            // Ignore messages we just sent (optimistic update already added them)
+            if (sentMessageIdsRef.current.has(message.id)) {
+                sentMessageIdsRef.current.delete(message.id)
+                return
+            }
+            
+            console.log("💬 Message received:", message.senderType, message.message.substring(0, 20))
+            const newMessage: Message = {
+                id: message.id,
+                text: message.message,
+                sender: message.senderType === "admin" ? "professional" : "user",
+                timestamp: new Date(message.timestamp),
+            }
+            setMessages((prev) => [...prev, newMessage])
+
+            // Show typing indicator briefly before message
+            if (message.senderType === "admin") {
+                setIsTyping(false)
+            }
+        }
+
+        const onAdminTyping = () => {
+            setIsTyping(true)
+            setTimeout(() => setIsTyping(false), 3000)
+        }
+
+        const onAdminLeft = () => {
+            console.log("👋 Admin left notification")
+            setWaitingForAdmin(true)
+            setAdminName("")
+            toast.info("Uzman sohbetten ayrıldı", {
+                description: "Başka bir uzman sizinle iletişime geçecek",
+            })
+        }
+
+        const onChatEnded = () => {
+            console.log("🔚 Chat ended notification")
+            toast.info("Sohbet sonlandırıldı", {
+                description: "Ekibimiz en kısa sürede sizinle iletişime geçecek",
+            })
+        }
+
+        // Setup event handlers
+        socket.on("connect", onConnect)
+        socket.on("disconnect", onDisconnect)
+        socket.on("chat:admin-joined", onAdminJoined)
+        socket.on("chat:message", onMessage)
+        socket.on("chat:history", onHistory)
+        socket.on("chat:admin-typing", onAdminTyping)
+        socket.on("chat:admin-left", onAdminLeft)
+        socket.on("chat:ended", onChatEnded)
         
         // If already connected, join immediately
         if (socket.connected && !hasJoinedRef.current) {
-            socket.emit("client:join", {
-                clientId: newClientId,
-                name: name,
-            })
-            hasJoinedRef.current = true
-            setIsConnected(true)
-            setIsConnecting(false)
+             // We can just call onConnect logic or simulate it
+             onConnect()
         }
 
         return () => {
@@ -199,15 +185,15 @@ export function PersonnelChatContent({ onMessagesChange }: PersonnelChatContentP
             // Remove page unload listener
             window.removeEventListener("beforeunload", handleBeforeUnload)
             
-            // Remove listeners
-            socket.off("connect")
-            socket.off("disconnect")
-            socket.off("chat:admin-joined")
-            socket.off("chat:message")
-            socket.off("chat:history")
-            socket.off("chat:admin-typing")
-            socket.off("chat:admin-left")
-            socket.off("chat:ended")
+            // Remove listeners (specific handlers only)
+            socket.off("connect", onConnect)
+            socket.off("disconnect", onDisconnect)
+            socket.off("chat:admin-joined", onAdminJoined)
+            socket.off("chat:message", onMessage)
+            socket.off("chat:history", onHistory)
+            socket.off("chat:admin-typing", onAdminTyping)
+            socket.off("chat:admin-left", onAdminLeft)
+            socket.off("chat:ended", onChatEnded)
             
             // Notify server that client is leaving
             if (hasJoinedRef.current) {

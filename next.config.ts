@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  reactStrictMode: false, // Disable for Socket.IO compatibility in development
 };
 
 export default nextConfig;
