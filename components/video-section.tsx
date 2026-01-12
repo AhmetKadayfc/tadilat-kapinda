@@ -7,7 +7,7 @@ import { useState, useRef } from "react"
 
 export function VideoSection() {
     const [isPlaying, setIsPlaying] = useState(false)
-    const [isMuted, setIsMuted] = useState(true)
+    const [isMuted, setIsMuted] = useState(false)
     const videoRef = useRef<HTMLVideoElement>(null)
 
     const togglePlay = () => {
@@ -63,18 +63,19 @@ export function VideoSection() {
                                     </div>
                                 </div>
 
-                                {/* Video element (hidden, placeholder) */}
+                                {/* Video element */}
                                 <video
                                     ref={videoRef}
-                                    className="hidden w-full h-full object-cover"
+                                    className={`absolute inset-0 w-full h-full object-cover ${isPlaying ? 'z-10' : 'z-0'}`}
                                     muted={isMuted}
                                     loop
+                                    playsInline
                                 >
-                                    {/* Video source buraya eklenecek */}
+                                    <source src="/how_to_use.mp4" type="video/mp4" />
                                 </video>
 
                                 {/* Play/Pause Overlay */}
-                                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div className="absolute inset-0 flex items-center justify-center z-20 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <Button
                                         size="lg"
                                         onClick={togglePlay}
@@ -88,7 +89,7 @@ export function VideoSection() {
                                 </div>
 
                                 {/* Controls */}
-                                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <div className="flex items-center justify-between text-white">
                                         <Button
                                             variant="ghost"

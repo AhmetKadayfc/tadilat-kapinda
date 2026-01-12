@@ -18,26 +18,8 @@ export function TestimonialsSection() {
             rating: 5,
             text: "Banyomun tadilatını yaptırdım. Hem fiyatlar uygundu hem de işçilik çok kaliteliydi. 30 dakikada 3 farklı ustadan teklif aldım!",
             project: "Banyo Tadilatı",
-            before: "Eski banyo",
-            after: "Yeni banyo",
-        },
-        {
-            name: "Mehmet Demir",
-            location: "Ankara, Çankaya",
-            rating: 5,
-            text: "Mutfak dolabı yaptırmak istiyordum. Platformdan hızlıca teklif aldım ve çok memnun kaldım. Kesinlikle tavsiye ederim!",
-            project: "Mutfak Dolapları",
-            before: "Eski mutfak",
-            after: "Modern mutfak",
-        },
-        {
-            name: "Zeynep Kaya",
-            location: "İzmir, Karşıyaka",
-            rating: 5,
-            text: "Evin tüm boyasını yenilettim. Çok profesyonel bir ekip geldi. Her şey çok düzenli ve temizdi. Fiyatlar da gayet makul.",
-            project: "Ev Boyama",
-            before: "Eski duvarlar",
-            after: "Yeni boyalı",
+            beforeImage: "/images/testimonials/ayse_yilmaz_once.png",
+            afterImage: "/images/testimonials/ayse_yilmaz_sonra.png",
         },
         {
             name: "Can Özkan",
@@ -45,8 +27,26 @@ export function TestimonialsSection() {
             rating: 5,
             text: "Balkonumu kapatmak istiyordum. Görüntülü görüşme ile usta geldi, ölçü aldı ve hemen işe başladı. Sonuç mükemmel oldu!",
             project: "Balkon Kapatma",
-            before: "Açık balkon",
-            after: "Kapalı balkon",
+            beforeImage: "/images/testimonials/can_ozkan_once.png",
+            afterImage: "/images/testimonials/can_ozkan_sonra.png",
+        },
+        {
+            name: "Mehmet Demir",
+            location: "Ankara, Çankaya",
+            rating: 5,
+            text: "Mutfak dolabı yaptırmak istiyordum. Platformdan hızlıca teklif aldım ve çok memnun kaldım. Kesinlikle tavsiye ederim!",
+            project: "Mutfak Dolapları",
+            beforeImage: "/images/testimonials/mehmet_demir_once.png",
+            afterImage: "/images/testimonials/mehmet_demir_sonra.png",
+        },
+        {
+            name: "Zeynep Kaya",
+            location: "İzmir, Karşıyaka",
+            rating: 5,
+            text: "Evin tüm boyasını yenilettim. Çok profesyonel bir ekip geldi. Her şey çok düzenli ve temizdi. Fiyatlar da gayet makul.",
+            project: "Ev Boyama",
+            beforeImage: "/images/testimonials/zeynep_kaya_boya_oncesi.png",
+            afterImage: "/images/testimonials/zeynep_kaya_boya_sonrasi.png",
         },
     ]
 
@@ -77,8 +77,12 @@ export function TestimonialsSection() {
                             <CarouselContent className="-ml-4">
                                 {testimonials.map((testimonial, index) => (
                                     <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                                        <Card className="h-full border-2 border-gray-100 hover:border-orange-200 transition-all hover:shadow-xl">
-                                            <CardContent className="p-6">
+                                        <Card className="h-full border-2 border-gray-100 p-0 hover:border-orange-200 transition-all hover:shadow-xl">
+                                            <CardContent className="p-6 relative">
+                                                {/* Project Type Badge */}
+                                                <span className="absolute top-4 right-4 px-3 py-1 text-xs font-semibold bg-orange-100 text-orange-700 rounded-full">
+                                                    {testimonial.project}
+                                                </span>
                                                 {/* Rating */}
                                                 <div className="flex items-center gap-1 mb-4">
                                                     {Array.from({ length: testimonial.rating }).map((_, i) => (
@@ -101,25 +105,23 @@ export function TestimonialsSection() {
                                                         <span className="flex-1 text-center">Sonra</span>
                                                     </div>
                                                     <div className="grid grid-cols-2 gap-2">
-                                                        <div className="aspect-square rounded-lg bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                                                            <span className="text-xs text-gray-600">
-                                                                {testimonial.before}
-                                                            </span>
+                                                        <div className="aspect-square rounded-lg overflow-hidden relative">
+                                                            <img
+                                                                src={testimonial.beforeImage}
+                                                                alt={`${testimonial.project} - Önce`}
+                                                                className="w-full h-full object-cover"
+                                                            />
                                                         </div>
-                                                        <div className="aspect-square rounded-lg bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
-                                                            <span className="text-xs text-white font-medium">
-                                                                {testimonial.after}
-                                                            </span>
+                                                        <div className="aspect-square rounded-lg overflow-hidden relative">
+                                                            <img
+                                                                src={testimonial.afterImage}
+                                                                alt={`${testimonial.project} - Sonra`}
+                                                                className="w-full h-full object-cover"
+                                                            />
                                                         </div>
                                                     </div>
                                                 </div>
 
-                                                {/* Project Type */}
-                                                <div className="mb-4">
-                                                    <span className="inline-block px-3 py-1 text-xs font-semibold bg-orange-100 text-orange-700 rounded-full">
-                                                        {testimonial.project}
-                                                    </span>
-                                                </div>
 
                                                 {/* Customer Info */}
                                                 <div className="border-t pt-4">
