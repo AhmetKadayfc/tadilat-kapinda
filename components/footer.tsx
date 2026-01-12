@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Facebook, Instagram, Twitter, Linkedin, Mail } from "lucide-react"
+import { Facebook, Instagram, Twitter, Linkedin, Mail, Phone, MapPin } from "lucide-react"
 import { useState } from "react"
 
 export function Footer() {
@@ -19,18 +19,18 @@ export function Footer() {
         {
             title: "Hızlı Linkler",
             links: [
-                { name: "Anasayfa", href: "#" },
-                { name: "Hakkımızda", href: "#hakkimizda" },
-                { name: "Nasıl Çalışır", href: "#nasil-calisir" },
-                { name: "Hizmetlerimiz", href: "#hizmetlerimiz" },
+                { name: "Anasayfa", href: "/" },
+                { name: "Hakkımızda", href: "/hakkimizda" },
+                { name: "Hizmetlerimiz", href: "/hizmetlerimiz" },
+                { name: "Referanslarımız", href: "/referanslarimiz" },
             ],
         },
         {
             title: "Kurumsal",
             links: [
-                { name: "Referanslarımız", href: "#referanslar" },
-                { name: "Müşteri Memnuniyeti", href: "#musteri-memnuniyeti" },
-                { name: "Sürdürülebilirlik", href: "#surdurulebilirlik" },
+                { name: "Nasıl Çalışır", href: "/#nasil-calisir" },
+                { name: "Müşteri Memnuniyeti", href: "/#musteri-memnuniyeti" },
+                { name: "Sık Sorulan Sorular", href: "/#sss" },
                 { name: "İletişim", href: "#iletisim" },
             ],
         },
@@ -65,6 +65,24 @@ export function Footer() {
                             Binlerce profesyonel usta ve müteahhit ile kaliteli,
                             hızlı ve uygun fiyatlı tadilat hizmetleri.
                         </p>
+
+                        {/* Contact Information */}
+                        <div className="space-y-3 mb-6">
+                            <h4 className="font-semibold text-white mb-3">İletişim Bilgileri</h4>
+                            <a href="tel:+902121234567" className="flex items-center gap-3 text-gray-400 hover:text-orange-400 transition-colors">
+                                <Phone className="h-4 w-4" />
+                                <span>+90 (212) 123 45 67</span>
+                            </a>
+                            <a href="mailto:info@tadilatcebimde.com" className="flex items-center gap-3 text-gray-400 hover:text-orange-400 transition-colors">
+                                <Mail className="h-4 w-4" />
+                                <span>info@tadilatcebimde.com</span>
+                            </a>
+                            <div className="flex items-start gap-3 text-gray-400">
+                                <MapPin className="h-4 w-4 mt-1 flex-shrink-0" />
+                                <span>Levent Mah. Caddebostan Sok. No:15<br />Beşiktaş, İstanbul</span>
+                            </div>
+                        </div>
+
                         {/* Social Media */}
                         <div className="flex gap-3">
                             {[

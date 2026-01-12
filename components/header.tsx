@@ -10,26 +10,29 @@ export function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
     const menuItems = [
-        { name: "Anasayfa", href: "#" },
-        { name: "Hakkımızda", href: "#hakkimizda" },
-        { name: "Nasıl Çalışır", href: "#nasil-calisir" },
-        // { name: "Hizmetlerimiz", href: "#hizmetlerimiz" },
-        // { name: "Referanslarımız", href: "#referanslar" },
-        { name: "Müşteri Memnuniyeti", href: "#musteri-memnuniyeti" },
-        // { name: "Sürdürülebilirlik", href: "#surdurulebilirlik" },
+        { name: "Anasayfa", href: "/" },
+        { name: "Hakkımızda", href: "/hakkimizda" },
+        { name: "Hizmetlerimiz", href: "/hizmetlerimiz" },
+        { name: "Referanslarımız", href: "/referanslarimiz" },
         { name: "İletişim", href: "#iletisim" },
     ]
 
     const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-        handleSmoothScroll(e, href)
+        // Only use smooth scroll for anchor links on the same page
+        if (href.startsWith('#')) {
+            handleSmoothScroll(e, href)
+        } else if (!href.includes('#')) {
+            // For page navigation, scroll to top
+            window.scrollTo(0, 0)
+        }
         setMobileMenuOpen(false)
     }
 
     return (
-        <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
+        <header className="fixed top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
             <div className="container mx-auto flex h-20 items-center justify-between px-4">
                 {/* Logo */}
-                <Link href="/" className="flex items-center space-x-2">
+                <Link href="/" scroll={true} className="flex items-center space-x-2">
                     <motion.div
                         whileHover={{ scale: 1.05, rotate: 5 }}
                         transition={{ type: "spring", stiffness: 400, damping: 10 }}
@@ -48,6 +51,7 @@ export function Header() {
                         <Link
                             key={item.name}
                             href={item.href}
+                            scroll={true}
                             onClick={(e) => handleClick(e, item.href)}
                             className="px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:text-orange-600 hover:bg-orange-50 rounded-md relative group">
                             {item.name}
@@ -80,6 +84,7 @@ export function Header() {
                                 <Link
                                     key={item.name}
                                     href={item.href}
+                                    scroll={true}
                                     onClick={(e) => handleClick(e, item.href)}
                                     className="block px-4 py-3 text-sm font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-md transition-colors">
                                     {item.name}
