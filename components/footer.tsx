@@ -23,6 +23,7 @@ export function Footer() {
                 { name: "Hakkımızda", href: "/hakkimizda" },
                 { name: "Hizmetlerimiz", href: "/hizmetlerimiz" },
                 { name: "Referanslarımız", href: "/referanslarimiz" },
+                { name: "Sürdürülebilirlik", href: "/surdurulebilirlik" },
             ],
         },
         {
