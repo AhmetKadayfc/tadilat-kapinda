@@ -41,7 +41,8 @@ export function Footer() {
                 { name: "KVKK", href: "/kvkk" },
                 { name: "Gizlilik Politikası", href: "/gizlilik" },
                 { name: "Kullanım Koşulları", href: "/kullanim-kosullari" },
-                { name: "Çerez Politikası", href: "#cerez" },
+                { name: "GoPro Bilgilendirme", href: "/gopro-bilgilendirme" },
+                { name: "Çerez Politikası", href: "/cerez-politikasi" },
             ],
         },
     ]
