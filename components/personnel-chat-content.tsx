@@ -3,15 +3,17 @@
 import { useState, useRef, useCallback, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { Send, User } from "lucide-react"
+import { Send, User, ImageIcon } from "lucide-react"
 import { connectSocket, getSocket, ChatMessage } from "@/lib/socket"
 import { toast } from "sonner"
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 
 interface Message {
     id: string
     text: string
     sender: "user" | "professional"
     timestamp: Date
+    imageUrl?: string
 }
 
 interface PersonnelChatContentProps {
@@ -30,8 +32,10 @@ export function PersonnelChatContent({ onMessagesChange }: PersonnelChatContentP
     const [waitingForAdmin, setWaitingForAdmin] = useState(true)
     const messagesEndRef = useRef<HTMLDivElement>(null)
     const textareaRef = useRef<HTMLTextAreaElement>(null)
+    const fileInputRef = useRef<HTMLInputElement>(null)
     const sentMessageIdsRef = useRef<Set<string>>(new Set())
     const hasJoinedRef = useRef(false)
+
 
     const formatTime = (date: Date) => {
         return date.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })
@@ -81,7 +85,7 @@ export function PersonnelChatContent({ onMessagesChange }: PersonnelChatContentP
                 })
                 hasJoinedRef.current = true
                 console.log("👤 Client joined:", newClientId)
-                
+
                 toast.success("Bağlantı kuruldu", {
                     description: "Uzmanımız yakında sizinle iletişime geçecek",
                 })
@@ -92,7 +96,7 @@ export function PersonnelChatContent({ onMessagesChange }: PersonnelChatContentP
             console.log("❌ Client chat disconnected:", reason)
             setIsConnected(false)
             hasJoinedRef.current = false
-            
+
             if (reason !== "io client disconnect") {
                 toast.error("Bağlantı kesildi", {
                     description: "Sunucuya yeniden bağlanılıyor...",
@@ -117,6 +121,7 @@ export function PersonnelChatContent({ onMessagesChange }: PersonnelChatContentP
                 text: msg.message,
                 sender: msg.senderType === "admin" ? "professional" : "user",
                 timestamp: new Date(msg.timestamp),
+                imageUrl: msg.imageUrl,
             }))
             setMessages(convertedMessages)
         }
@@ -127,13 +132,14 @@ export function PersonnelChatContent({ onMessagesChange }: PersonnelChatContentP
                 sentMessageIdsRef.current.delete(message.id)
                 return
             }
-            
+
             console.log("💬 Message received:", message.senderType, message.message.substring(0, 20))
             const newMessage: Message = {
                 id: message.id,
                 text: message.message,
                 sender: message.senderType === "admin" ? "professional" : "user",
                 timestamp: new Date(message.timestamp),
+                imageUrl: message.imageUrl,
             }
             setMessages((prev) => [...prev, newMessage])
 
@@ -173,18 +179,18 @@ export function PersonnelChatContent({ onMessagesChange }: PersonnelChatContentP
         socket.on("chat:admin-typing", onAdminTyping)
         socket.on("chat:admin-left", onAdminLeft)
         socket.on("chat:ended", onChatEnded)
-        
+
         // If already connected, join immediately
         if (socket.connected && !hasJoinedRef.current) {
-             // We can just call onConnect logic or simulate it
-             onConnect()
+            // We can just call onConnect logic or simulate it
+            onConnect()
         }
 
         return () => {
             console.log("🧹 Cleaning up client chat listeners")
             // Remove page unload listener
             window.removeEventListener("beforeunload", handleBeforeUnload)
-            
+
             // Remove listeners (specific handlers only)
             socket.off("connect", onConnect)
             socket.off("disconnect", onDisconnect)
@@ -194,7 +200,7 @@ export function PersonnelChatContent({ onMessagesChange }: PersonnelChatContentP
             socket.off("chat:admin-typing", onAdminTyping)
             socket.off("chat:admin-left", onAdminLeft)
             socket.off("chat:ended", onChatEnded)
-            
+
             // Notify server that client is leaving
             if (hasJoinedRef.current) {
                 socket.emit("client:leave", { clientId: newClientId })
@@ -257,13 +263,85 @@ export function PersonnelChatContent({ onMessagesChange }: PersonnelChatContentP
 
     const handleTextareaChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setInputMessage(e.target.value)
-        
+
         // Auto resize textarea
         if (textareaRef.current) {
             textareaRef.current.style.height = 'auto'
             textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`
         }
     }, [])
+
+    const sendImageDirectly = useCallback((base64Image: string) => {
+        if (!isConnected || !clientId) {
+            toast.error("Bağlantı yok", {
+                description: "Sunucuya bağlı değilsiniz",
+            })
+            return
+        }
+
+        const messageData: ChatMessage = {
+            id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            senderId: clientId,
+            senderName: clientName,
+            senderType: "client",
+            message: "[Fotoğraf]",
+            timestamp: Date.now(),
+            imageUrl: base64Image,
+        }
+
+        // Mark this message as sent by us
+        sentMessageIdsRef.current.add(messageData.id)
+
+        const socket = getSocket()
+        socket.emit("chat:send-message", {
+            clientId: clientId,
+            ...messageData,
+        })
+
+        // Add message to local state immediately (optimistic update)
+        const newMessage: Message = {
+            id: messageData.id,
+            text: messageData.message,
+            sender: "user",
+            timestamp: new Date(messageData.timestamp),
+            imageUrl: base64Image,
+        }
+
+        setMessages((prev) => [...prev, newMessage])
+        toast.success("Fotoğraf gönderildi")
+    }, [isConnected, clientId, clientName])
+
+    const handleImageSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (!file) return
+
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            toast.error("Geçersiz dosya türü", {
+                description: "Lütfen bir resim dosyası seçin",
+            })
+            return
+        }
+
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            toast.error("Dosya çok büyük", {
+                description: "Maksimum dosya boyutu 5MB olmalıdır",
+            })
+            return
+        }
+
+        // Convert to base64 and send directly
+        const reader = new FileReader()
+        reader.onload = (event) => {
+            const base64 = event.target?.result as string
+            sendImageDirectly(base64)
+        }
+        reader.readAsDataURL(file)
+
+        // Reset input value to allow selecting the same file again
+        e.target.value = ''
+    }, [sendImageDirectly])
 
     if (isConnecting) {
         return (
@@ -336,11 +414,10 @@ export function PersonnelChatContent({ onMessagesChange }: PersonnelChatContentP
                             key={message.id}
                             className={`flex gap-3 ${message.sender === 'user' ? 'flex-row-reverse' : ''}`}
                         >
-                            <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                                message.sender === 'user' 
-                                    ? 'bg-blue-600' 
-                                    : 'bg-orange-600'
-                            }`}>
+                            <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${message.sender === 'user'
+                                ? 'bg-blue-600'
+                                : 'bg-orange-600'
+                                }`}>
                                 {message.sender === 'user' ? (
                                     <User className="h-4 w-4 text-white" />
                                 ) : (
@@ -349,16 +426,38 @@ export function PersonnelChatContent({ onMessagesChange }: PersonnelChatContentP
                                     </span>
                                 )}
                             </div>
-                            <div className={`flex flex-col max-w-[75%] ${
-                                message.sender === 'user' ? 'items-end' : 'items-start'
-                            }`}>
-                                <div className={`rounded-2xl px-4 py-2 ${
-                                    message.sender === 'user'
+                            <div className={`flex flex-col max-w-[75%] ${message.sender === 'user' ? 'items-end' : 'items-start'
+                                }`}>
+                                {message.imageUrl ? (
+                                    <div className={`rounded-2xl overflow-hidden ${message.sender === 'user'
+                                        ? 'rounded-tr-sm'
+                                        : 'rounded-tl-sm shadow-sm'
+                                        }`}>
+                                        <Dialog>
+                                            <DialogTrigger asChild>
+                                                <img
+                                                    src={message.imageUrl}
+                                                    alt="Gönderilen fotoğraf"
+                                                    className="max-w-full max-h-64 object-contain cursor-pointer hover:opacity-90 transition-opacity"
+                                                />
+                                            </DialogTrigger>
+                                            <DialogContent className="max-w-4xl w-full h-auto max-h-[90vh] p-0 overflow-hidden bg-transparent border-none shadow-none flex items-center justify-center">
+                                                <img
+                                                    src={message.imageUrl}
+                                                    alt="Gönderilen fotoğraf"
+                                                    className="w-full h-full object-contain max-h-[90vh]"
+                                                />
+                                            </DialogContent>
+                                        </Dialog>
+                                    </div>
+                                ) : (
+                                    <div className={`rounded-2xl px-4 py-2 ${message.sender === 'user'
                                         ? 'bg-blue-600 text-white rounded-tr-sm'
                                         : 'bg-white text-gray-900 rounded-tl-sm shadow-sm'
-                                }`}>
-                                    <p className="text-sm leading-relaxed">{message.text}</p>
-                                </div>
+                                        }`}>
+                                        <p className="text-sm leading-relaxed">{message.text}</p>
+                                    </div>
+                                )}
                                 <span className="text-xs text-gray-400 mt-1">
                                     {formatTime(message.timestamp)}
                                 </span>
@@ -384,13 +483,34 @@ export function PersonnelChatContent({ onMessagesChange }: PersonnelChatContentP
                         </div>
                     </div>
                 )}
-                
+
                 <div ref={messagesEndRef} />
             </div>
 
             {/* Input Area */}
             <div className="border-t bg-white p-2 shrink-0">
-                <div className="flex gap-3 items-end">
+                <div className="flex gap-2 items-end">
+                    {/* Hidden file input */}
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageSelect}
+                        className="hidden"
+                    />
+
+                    {/* Image upload button */}
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="shrink-0"
+                        title="Fotoğraf gönder"
+                    >
+                        <ImageIcon className="h-4 w-4" />
+                    </Button>
+
                     <Textarea
                         ref={textareaRef}
                         value={inputMessage}
@@ -400,6 +520,7 @@ export function PersonnelChatContent({ onMessagesChange }: PersonnelChatContentP
                         className="resize-none min-h-11 max-h-[120px]"
                         rows={1}
                     />
+
                     <Button
                         onClick={handleSendMessage}
                         disabled={!inputMessage.trim()}

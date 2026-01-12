@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, Send, Phone, Loader2 } from "lucide-react"
 import { connectSocket, getSocket, ChatMessage } from "@/lib/socket"
 import { toast } from "sonner"
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 
 /**
  * Admin Chat Page
@@ -47,7 +48,7 @@ export default function AdminChatPage() {
         const onConnect = () => {
             console.log("🔌 Admin chat connected to socket")
             setIsConnected(true)
-            
+
             // Join the chat room on connect/reconnect
             if (!hasJoinedChatRef.current) {
                 socket.emit("admin:join-chat", {
@@ -109,10 +110,10 @@ export default function AdminChatPage() {
         socket.on("chat:history", onHistory)
         socket.on("chat:client-left", onClientLeft)
         socket.on("chat:ended", onChatEnded)
-        
+
         // If already connected, join immediately
         if (socket.connected) {
-             onConnect()
+            onConnect()
         }
 
         return () => {
@@ -125,7 +126,7 @@ export default function AdminChatPage() {
             socket.off("chat:history", onHistory)
             socket.off("chat:client-left", onClientLeft)
             socket.off("chat:ended", onChatEnded)
-            
+
             // Leave chat room
             if (hasJoinedChatRef.current) {
                 socket.emit("admin:leave-chat", { clientId })
@@ -173,7 +174,7 @@ export default function AdminChatPage() {
     const handleEndChat = () => {
         const socket = getSocket()
         socket.emit("admin:end-chat", { clientId })
-        
+
         toast.success("Sohbet sonlandırıldı")
         router.push("/admin/dashboard")
     }
@@ -238,18 +239,16 @@ export default function AdminChatPage() {
                                 messages.map((message) => (
                                     <div
                                         key={message.id}
-                                        className={`flex ${
-                                            message.senderType === "admin"
-                                                ? "justify-end"
-                                                : "justify-start"
-                                        }`}
+                                        className={`flex ${message.senderType === "admin"
+                                            ? "justify-end"
+                                            : "justify-start"
+                                            }`}
                                     >
                                         <div
-                                            className={`max-w-[70%] rounded-lg p-4 break-words ${
-                                                message.senderType === "admin"
-                                                    ? "bg-orange-600 text-white"
-                                                    : "bg-gray-100 text-gray-900"
-                                            }`}
+                                            className={`max-w-[70%] rounded-lg p-4 break-words ${message.senderType === "admin"
+                                                ? "bg-orange-600 text-white"
+                                                : "bg-gray-100 text-gray-900"
+                                                }`}
                                         >
                                             <div className="flex items-center gap-2 mb-1 flex-wrap">
                                                 <span className="text-xs font-semibold">
@@ -262,9 +261,30 @@ export default function AdminChatPage() {
                                                     })}
                                                 </span>
                                             </div>
-                                            <p className="text-sm whitespace-pre-wrap break-words">
-                                                {message.message}
-                                            </p>
+                                            {message.imageUrl ? (
+                                                <div className="mt-2">
+                                                    <Dialog>
+                                                        <DialogTrigger asChild>
+                                                            <img
+                                                                src={message.imageUrl}
+                                                                alt="Gönderilen fotoğraf"
+                                                                className="max-w-full max-h-64 rounded-lg object-contain cursor-pointer hover:opacity-90 transition-opacity"
+                                                            />
+                                                        </DialogTrigger>
+                                                        <DialogContent className="max-w-4xl w-full h-auto max-h-[90vh] p-0 overflow-hidden bg-transparent border-none shadow-none flex items-center justify-center">
+                                                            <img
+                                                                src={message.imageUrl}
+                                                                alt="Gönderilen fotoğraf"
+                                                                className="w-full h-full object-contain max-h-[90vh]"
+                                                            />
+                                                        </DialogContent>
+                                                    </Dialog>
+                                                </div>
+                                            ) : (
+                                                <p className="text-sm whitespace-pre-wrap break-words">
+                                                    {message.message}
+                                                </p>
+                                            )}
                                         </div>
                                     </div>
                                 ))

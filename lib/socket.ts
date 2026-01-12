@@ -93,6 +93,7 @@ export type ChatMessage = {
     senderType: "client" | "admin"
     message: string
     timestamp: number
+    imageUrl?: string
 }
 
 export type WaitingClient = {

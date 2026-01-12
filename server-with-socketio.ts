@@ -33,6 +33,7 @@ app.prepare().then(() => {
             origin: "*",
             methods: ["GET", "POST"],
         },
+        maxHttpBufferSize: 1e8, // 100MB to be safe for large images
     })
 
     io.on("connection", (socket) => {
