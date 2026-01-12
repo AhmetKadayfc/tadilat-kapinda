@@ -28,7 +28,7 @@ export default function AdminLoginPage() {
         if (username === "admin" && password === "admin123") {
             // Store admin session
             localStorage.setItem("adminAuth", "true")
-            localStorage.setItem("adminUsername", username)
+            localStorage.setItem("adminUsername", "Müşteri Temsilcisi")
 
             toast.success("Giriş başarılı!", {
                 description: "Yönetim paneline yönlendiriliyorsunuz...",

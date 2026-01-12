@@ -21,15 +21,15 @@ export default function AdminDashboardPage() {
     const isRegisteredRef = useRef(false)
     const [displayName] = useState(() => {
         if (typeof window !== 'undefined') {
-            return localStorage.getItem("adminUsername") || "Admin"
+            return localStorage.getItem("adminUsername") || "Müşteri Temsilcisi"
         }
-        return "Admin"
+        return "Müşteri Temsilcisi"
     })
 
     useEffect(() => {
         // Check authentication and get username once
         const isAuthenticated = localStorage.getItem("adminAuth")
-        const username = localStorage.getItem("adminUsername") || "Admin"
+        const username = localStorage.getItem("adminUsername") || "Müşteri Temsilcisi"
         adminUsernameRef.current = username
 
         if (!isAuthenticated) {
@@ -44,17 +44,17 @@ export default function AdminDashboardPage() {
         const onConnect = () => {
             console.log("🔌 Admin dashboard connected to socket")
             setIsConnected(true)
-            
+
             // Register as admin on connect/reconnect
             if (!isRegisteredRef.current) {
                 socket.emit("admin:register", { adminId: adminUsernameRef.current })
                 isRegisteredRef.current = true
                 console.log("🔐 Admin registered:", adminUsernameRef.current)
             }
-            
+
             // Request waiting clients
             socket.emit("admin:get-waiting-clients")
-            
+
             toast.success("Bağlantı kuruldu", {
                 description: "Gerçek zamanlı bildirimler aktif",
             })
@@ -64,7 +64,7 @@ export default function AdminDashboardPage() {
             console.log("❌ Admin dashboard disconnected:", reason)
             setIsConnected(false)
             isRegisteredRef.current = false
-            
+
             if (reason !== "io client disconnect") {
                 toast.error("Bağlantı kesildi", {
                     description: "Sunucuya yeniden bağlanılıyor...",
@@ -89,7 +89,7 @@ export default function AdminDashboardPage() {
         socket.on("disconnect", onDisconnect)
         socket.on("admin:waiting-clients", onWaitingClients)
         socket.on("admin:new-client", onNewClient)
-        
+
         // If already connected, trigger connect handler manually
         if (socket.connected && !isRegisteredRef.current) {
             onConnect()
@@ -102,7 +102,7 @@ export default function AdminDashboardPage() {
             socket.off("disconnect", onDisconnect)
             socket.off("admin:waiting-clients", onWaitingClients)
             socket.off("admin:new-client", onNewClient)
-            
+
             // Mark as unregistered for next mount
             isRegisteredRef.current = false
         }
@@ -110,10 +110,10 @@ export default function AdminDashboardPage() {
 
     const handleStartChat = (clientId: string) => {
         const socket = getSocket()
-        
+
         // Notify backend that admin is taking this client
         socket.emit("admin:take-client", { clientId, adminId: adminUsernameRef.current })
-        
+
         // Navigate to chat page
         router.push(`/admin/chat/${clientId}`)
     }
@@ -121,11 +121,11 @@ export default function AdminDashboardPage() {
     const handleLogout = () => {
         localStorage.removeItem("adminAuth")
         localStorage.removeItem("adminUsername")
-        
+
         const socket = getSocket()
         socket.emit("admin:unregister", { adminId: adminUsernameRef.current })
         socket.disconnect()
-        
+
         toast.success("Çıkış yapıldı")
         router.push("/admin/login")
     }

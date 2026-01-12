@@ -33,7 +33,7 @@ export default function AdminChatPage() {
     useEffect(() => {
         // Check authentication and get username once
         const isAuthenticated = localStorage.getItem("adminAuth")
-        const username = localStorage.getItem("adminUsername") || "Admin"
+        const username = localStorage.getItem("adminUsername") || "Müşteri Temsilcisi"
         adminUsernameRef.current = username
 
         if (!isAuthenticated) {
