@@ -73,7 +73,7 @@ export function HeroSection() {
         // Simulate sending to backend
         console.log("Uploading files:", files)
         console.log("Message:", message)
-        
+
         toast.success("Fotoğraflarınız başarıyla gönderildi!", {
             description: "Profesyonel ekibimiz en kısa sürede size dönüş yapacak.",
         })
@@ -201,8 +201,8 @@ export function HeroSection() {
                                     document.getElementById('photo-upload-submit')?.click()
                                 }}
                             >
-                                <PhotoUploadContent 
-                                    onSubmit={handlePhotoUploadSubmit} 
+                                <PhotoUploadContent
+                                    onSubmit={handlePhotoUploadSubmit}
                                     remainingTime={0}
                                 />
                             </ActionDialog>
@@ -248,7 +248,7 @@ export function HeroSection() {
                                 description={box.dialogDescription}
                                 hideFooter={true}
                             >
-                                <VideoCallContent 
+                                <VideoCallContent
                                     remainingTime={0}
                                     onEndCall={() => setShowEndCallConfirmation(true)}
                                 />
@@ -293,32 +293,6 @@ export function HeroSection() {
                             }}
                         >
                             Evet, Bitir
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
-
-            {/* End Call Confirmation Dialog */}
-            <AlertDialog open={showEndCallConfirmation} onOpenChange={setShowEndCallConfirmation}>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Aramayı Sonlandırmak İstiyor musunuz?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            Görüntülü görüşmeyi sonlandırmak üzeresiniz. Uzmanımızla olan bağlantınız kesilecektir.
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>İptal Et</AlertDialogCancel>
-                        <AlertDialogAction
-                            onClick={() => {
-                                toast.success("Görüşme sonlandırıldı", {
-                                    description: "Ekibimiz en kısa sürede sizinle iletişime geçecek.",
-                                })
-                                setShowEndCallConfirmation(false)
-                                handleCloseDialog()
-                            }}
-                        >
-                            Evet, Sonlandır
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
